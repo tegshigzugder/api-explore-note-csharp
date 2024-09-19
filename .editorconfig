@@ -1,0 +1,31 @@
+root = true
+
+[*]
+indent_style = space
+xend_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+curly_bracket_next_line = false
+spaces_around_operators = true
+indent_style = tab
+indent_size = 4
+
+
+[*.bat]
+end_of_line = crlf
+
+[*.cs]
+curly_bracket_next_line = true
+# csharp_style_namespace_declarations=file_scoped:error
+# dotnet_diagnostic.IDE0005.severity = error
+
+[*.{cpp,cs,gradle,java,kt,py,rs}]
+
+[*.{js,ts}]
+quote_type = single
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.tsv]

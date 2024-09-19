@@ -1,0 +1,43 @@
+﻿{
+	"$schema": "http://json.schemastore.org/launchsettings.json",
+	"iisSettings": {
+		"windowsAuthentication": false,
+		"anonymousAuthentication": true,
+		"iisExpress": {
+			"applicationUrl": "http://localhost:9663",
+			"sslPort": 44317
+		}
+	},
+	"profiles": {
+		"FERNWEH-API_DEVELOPMENT": {
+			"commandName": "Project",
+			"dotnetRunMessages": true,
+			"launchBrowser": false,
+			"launchUrl": "swagger",
+			"applicationUrl": "https://localhost:5001",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			}
+		},
+		"FERNWEH-API_STAGING": {
+			"commandName": "Project",
+			"dotnetRunMessages": true,
+			"launchBrowser": false,
+			"launchUrl": "swagger",
+			"applicationUrl": "https://localhost:5001",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Staging"
+			}
+		},
+		"FERNWEH-API_PRODUCTION": {
+			"commandName": "Project",
+			"dotnetRunMessages": true,
+			"launchBrowser": false,
+			"launchUrl": "swagger",
+			"applicationUrl": "https://localhost:5001",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Production"
+			}
+		}
+	}
+}

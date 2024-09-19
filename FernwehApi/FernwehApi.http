@@ -1,0 +1,6 @@
+@FernwehApi_HostAddress = http://localhost:5262
+
+GET {{FernwehApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

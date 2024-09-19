@@ -1,2 +1,5 @@
 # explore-note-csharp
-explore-note-csharp
+
+```
+$ dotnet build
+```
