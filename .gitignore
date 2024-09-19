@@ -5,4 +5,3 @@ bin
 */secrets.json
 FernwehApi/connectionstrings.json
 FernwehApi/Results/
-*.vscode/
