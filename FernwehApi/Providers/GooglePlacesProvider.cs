@@ -22,7 +22,8 @@ public class GooglePlacesProvider : IGooglePlacesProvider
 
 	public async Task<List<Place>> OnGetSearchText(string city, string amenity)
 	{
-		var fieldsList = new List<string>{
+		var fieldsList = new List<string>
+		{
 			"places.rating",
 			"places.userRatingCount",
 			"places.formattedAddress",
@@ -32,7 +33,7 @@ public class GooglePlacesProvider : IGooglePlacesProvider
 		var fields = string.Join(",", fieldsList);
 		var input = Uri.EscapeDataString($"{amenity} in {city}");
 
-		string requestBody = @$"{{ ""textQuery"": ""{input}"" }}";
+		var requestBody = @$"{{ ""textQuery"": ""{input}"" }}";
 		var request = new HttpRequestMessage(HttpMethod.Post, URL);
 		request.Headers.Add("X-Goog-Api-Key", KEY);
 		request.Headers.Add("X-Goog-FieldMask", fields);
@@ -46,7 +47,7 @@ public class GooglePlacesProvider : IGooglePlacesProvider
 		if (response.IsSuccessStatusCode)
 		{
 			// Read and display the response content
-			string result = await response.Content.ReadAsStringAsync();
+			var result = await response.Content.ReadAsStringAsync();
 			var options = new JsonSerializerOptions
 			{
 				PropertyNameCaseInsensitive = true
@@ -59,6 +60,7 @@ public class GooglePlacesProvider : IGooglePlacesProvider
 			// Display error message if the request was not successful
 			Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
 		}
+
 		return [];
 	}
 }

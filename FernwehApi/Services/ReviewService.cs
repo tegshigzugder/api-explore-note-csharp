@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using FernwehApi.Database.Models;
 using FernwehApi.Database.Repositories;
-using static FernwehApi.Controllers.ReviewController;
 
 namespace FernwehApi.Services;
 
@@ -60,26 +59,26 @@ public class ReviewService : IReviewService
 			// if item doesnt exist create it
 			// TODO: if place exists and items and reviews
 			placeDb.PlaceReviews = new List<PlaceReview>
+			{
+				new PlaceReview
 				{
-					new PlaceReview
-					{
-						Rating = placeReviewRequestDto.Rating,
-						Comment = placeReviewRequestDto.Comment,
-					}
-				};
+					Rating = placeReviewRequestDto.Rating,
+					Comment = placeReviewRequestDto.Comment,
+				}
+			};
 
 			placeDb.PlaceItems = placeReviewRequestDto.PlaceItemReviews.Select(x => new PlaceItem
 			{
 				Name = x.PlaceItemName,
 				Price = x.PlaceItemPrice,
 				PlaceItemReviews = new List<PlaceItemReview>
-			{
-				new PlaceItemReview
 				{
-					Rating = x.PlaceItemRating,
-					Comment = x.PlaceItemComment,
+					new PlaceItemReview
+					{
+						Rating = x.PlaceItemRating,
+						Comment = x.PlaceItemComment,
+					}
 				}
-			}
 			}).ToList();
 
 			await _placeRepository.UpdatePlace(placeDb);

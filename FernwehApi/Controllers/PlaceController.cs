@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace FernwehApi.Controllers;
+
 [ApiController]
 [Route("[controller]")]
 public class PlaceController : ControllerBase
@@ -23,17 +24,6 @@ public class PlaceController : ControllerBase
 		_logger = logger;
 		_placesService = placesService;
 		_enumService = enumService;
-	}
-
-	/// <summary>
-	///
-	/// </summary>
-	/// <returns></returns>
-	[HttpGet(Name = "search")]
-	public async Task<IActionResult> Search(City city, Amenity amenity, PlaceSource source = PlaceSource.OpenStreetMap)
-	{
-		var results = await _placesService.Search(city, amenity, source);
-		return Ok(results);
 	}
 
 	[HttpGet("enums")]

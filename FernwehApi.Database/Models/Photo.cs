@@ -1,7 +1,7 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using PackApi.Models.Database;
 
 namespace FernwehApi.Database.Models;
+
 public class Photo : AuditableEntity
 {
 	public int Id { get; set; }

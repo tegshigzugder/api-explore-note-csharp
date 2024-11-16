@@ -5,5 +5,5 @@ namespace FernwehApi.Providers;
 
 public interface IOsmOverpassProvider
 {
-	Task<OverpassResponse> OnGetSearchText(City city, Amenity amenity);
+	Task<OverpassResponse?> OnGetSearchText(Amenity amenity, long areaId);
 }
