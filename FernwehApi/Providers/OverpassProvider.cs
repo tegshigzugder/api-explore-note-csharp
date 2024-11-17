@@ -7,12 +7,12 @@ using Microsoft.Extensions.Configuration;
 
 namespace FernwehApi.Providers;
 
-public class OsmOverpassProvider : IOsmOverpassProvider
+public class OverpassProvider : IOverpassProvider
 {
 	private readonly IConfiguration _config;
 	private readonly string _overpassApiUrl;
 
-	public OsmOverpassProvider(IConfiguration config)
+	public OverpassProvider(IConfiguration config)
 	{
 		_config = config;
 		_overpassApiUrl = _config.GetValue<string>("OverpassApi");

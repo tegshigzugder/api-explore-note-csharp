@@ -3,7 +3,7 @@ using FernwehApi.OsmModels;
 
 namespace FernwehApi.Providers;
 
-public interface IOsmOverpassProvider
+public interface IOverpassProvider
 {
 	Task<OverpassResponse?> OnGetSearchText(Amenity amenity, long areaId);
 }

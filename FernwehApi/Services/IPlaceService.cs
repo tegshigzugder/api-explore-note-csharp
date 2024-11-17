@@ -7,5 +7,5 @@ namespace FernwehApi.Services;
 
 public interface IPlaceService
 {
-	Task<List<PlaceResponseDto>> GetPlacesOfInterest(City city, Amenity amenity);
+	Task<List<PlaceResponseDto>> ExtractPlaces(City city, Amenity amenity);
 }

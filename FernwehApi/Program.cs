@@ -36,8 +36,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPlaceService, PlaceService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 
-builder.Services.AddScoped<IGooglePlacesProvider, GooglePlacesProvider>();
-builder.Services.AddScoped<IOsmOverpassProvider, OsmOverpassProvider>();
+builder.Services.AddScoped<IOverpassProvider, OverpassProvider>();
 builder.Services.AddScoped<INominatimProvider, NominatimProvider>();
 
 builder.Services.AddScoped<IPlacesDbRepository, PlacesDbRepository>();

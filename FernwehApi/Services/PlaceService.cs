@@ -9,34 +9,27 @@ namespace FernwehApi.Services;
 
 public class PlaceService : IPlaceService
 {
-	private readonly IOsmOverpassProvider _osmOverpassProvider;
+	private readonly IOverpassProvider _overpassProvider;
 	private readonly INominatimProvider _nominatimProvider;
 
 	public PlaceService(
-		IOsmOverpassProvider osmOverpassProvider,
+		IOverpassProvider overpassProvider,
 		INominatimProvider nominatimProvider)
 	{
-		_osmOverpassProvider = osmOverpassProvider;
+		_overpassProvider = overpassProvider;
 		_nominatimProvider = nominatimProvider;
 	}
 
-	public async Task<List<PlaceResponseDto>> GetPlacesOfInterest(City city, Amenity amenity)
+	public async Task<List<PlaceResponseDto>> ExtractPlaces(City city, Amenity amenity)
 	{
-		try
-		{
-			var areaId = await ExtractAreaId(city);
-			return await ExtractPlaces(amenity, areaId);
-		}
-		catch (Exception e)
-		{
-			Console.WriteLine(e);
-			throw;
-		}
+		var areaId = await ExtractAreaId(city);
+		var places = await ExtractPlaces(amenity, areaId);
+		return places;
 	}
 
 	private async Task<List<PlaceResponseDto>> ExtractPlaces(Amenity amenity, long areaId)
 	{
-		var overpassResponse = await _osmOverpassProvider.OnGetSearchText(amenity, areaId);
+		var overpassResponse = await _overpassProvider.OnGetSearchText(amenity, areaId);
 		if (overpassResponse == null)
 		{
 			throw new InvalidOperationException("OverpassResponse is null");
