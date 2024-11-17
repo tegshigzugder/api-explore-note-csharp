@@ -7,33 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace FernwehApi.Controllers;
+
 [ApiController]
 [Route("[controller]")]
 public class PlaceController : ControllerBase
 {
 	private readonly ILogger<PlaceController> _logger;
-	private readonly IPlaceService _placesService;
+	private readonly IPlaceService _placeService;
 	private readonly IEnumService _enumService;
 
 	public PlaceController(
 		ILogger<PlaceController> logger,
-		IPlaceService placesService,
+		IPlaceService placeService,
 		IEnumService enumService)
 	{
 		_logger = logger;
-		_placesService = placesService;
+		_placeService = placeService;
 		_enumService = enumService;
-	}
-
-	/// <summary>
-	///
-	/// </summary>
-	/// <returns></returns>
-	[HttpGet(Name = "search")]
-	public async Task<IActionResult> Search(City city, Amenity amenity, PlaceSource source = PlaceSource.OpenStreetMap)
-	{
-		var results = await _placesService.Search(city, amenity, source);
-		return Ok(results);
 	}
 
 	[HttpGet("enums")]
@@ -52,9 +42,16 @@ public class PlaceController : ControllerBase
 	}
 
 	[HttpGet("places")]
-	public async Task<ActionResult<List<PlaceResponseDto>>> GetPlaces(City city, Amenity amenity)
+	public async Task<ActionResult> GetPlaces(City city, Amenity amenity)
 	{
-		var placeResponseDto = await _placesService.GetPlacesOfInterest(city, amenity);
-		return Ok(placeResponseDto);
+		try
+		{
+			var places = await _placeService.ExtractPlaces(city, amenity);
+			return Ok(new ResponseWrapper<List<PlaceResponseDto>>(true, "Success", places));
+		}
+		catch (Exception ex)
+		{
+			return BadRequest(new ResponseWrapper<string>(false, ex.Message, null, "ERROR_CODE"));
+		}
 	}
 }

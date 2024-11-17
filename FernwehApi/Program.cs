@@ -7,7 +7,6 @@ using Microsoft.Extensions.Hosting;
 using FernwehApi.Database.Models;
 using FernwehApi.Providers;
 using FernwehApi.Database.Repositories;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,18 +20,15 @@ builder.Services.AddCors(options =>
 		builder =>
 		{
 			builder.AllowAnyOrigin()
-					.AllowAnyHeader()
-					.AllowAnyMethod();
+				.AllowAnyHeader()
+				.AllowAnyMethod();
 		});
 });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers()
-	.AddJsonOptions(options =>
-	{
-		options.JsonSerializerOptions.PropertyNamingPolicy = null;
-	});
+	.AddJsonOptions(options => { options.JsonSerializerOptions.PropertyNamingPolicy = null; });
 
 
 builder.Services.AddScoped<IEnumService, EnumService>();
@@ -40,40 +36,15 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPlaceService, PlaceService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 
-builder.Services.AddScoped<IGooglePlacesProvider, GooglePlacesProvider>();
-builder.Services.AddScoped<IOsmOverpassProvider, OsmOverpassProvider>();
+builder.Services.AddScoped<IOverpassProvider, OverpassProvider>();
+builder.Services.AddScoped<INominatimProvider, NominatimProvider>();
 
 builder.Services.AddScoped<IPlacesDbRepository, PlacesDbRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPlaceRepository, PlaceRepository>();
 builder.Services.AddScoped<IPlaceItemRepository, PlaceItemRepository>();
 
-// var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
-// builder.Services.AddSingleton(jwtSettings);
-
-// builder.Services.AddAuthentication(options =>
-// {
-// 	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-// 	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-// })
-// .AddJwtBearer(options =>
-// {
-// 	options.TokenValidationParameters = new TokenValidationParameters
-// 	{
-// 		ValidateIssuer = true,
-// 		ValidateAudience = true,
-// 		ValidateLifetime = true,
-// 		ValidateIssuerSigningKey = true,
-// 		ValidIssuer = jwtSettings.Issuer,
-// 		ValidAudience = jwtSettings.Audience,
-// 		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
-// 	};
-// });
-
-builder.Services.AddRouting(options =>
-{
-	options.LowercaseUrls = true;
-});
+builder.Services.AddRouting(options => { options.LowercaseUrls = true; });
 
 var app = builder.Build();
 
@@ -93,9 +64,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
-// app.UseAuthentication();
-// app.UseAuthorization();
 
 app.MapControllers();
 

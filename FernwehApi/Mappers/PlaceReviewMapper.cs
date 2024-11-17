@@ -1,5 +1,4 @@
 using FernwehApi.Database.Models;
-using static FernwehApi.Controllers.ReviewController;
 
 namespace FernwehApi.Mappers;
 

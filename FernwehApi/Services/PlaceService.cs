@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FernwehApi.Models;
 using FernwehApi.OsmModels;
@@ -8,39 +9,62 @@ namespace FernwehApi.Services;
 
 public class PlaceService : IPlaceService
 {
-	private readonly IGooglePlacesProvider _googleMapsProvider;
-	private readonly IOsmOverpassProvider _osmOverpassProvider;
+	private readonly IOverpassProvider _overpassProvider;
+	private readonly INominatimProvider _nominatimProvider;
 
 	public PlaceService(
-		IGooglePlacesProvider googleMapsProvider,
-		IOsmOverpassProvider osmOverpassProvider)
+		IOverpassProvider overpassProvider,
+		INominatimProvider nominatimProvider)
 	{
-		_googleMapsProvider = googleMapsProvider;
-		_osmOverpassProvider = osmOverpassProvider;
+		_overpassProvider = overpassProvider;
+		_nominatimProvider = nominatimProvider;
 	}
 
-	public async Task<List<PlaceResponseDto>> Search(City city, Amenity amenity, PlaceSource source)
+	public async Task<List<PlaceResponseDto>> ExtractPlaces(City city, Amenity amenity)
 	{
+		var areaId = await ExtractAreaId(city);
+		var places = await ExtractPlaces(amenity, areaId);
+		return places;
+	}
 
-		switch (source)
+	private async Task<List<PlaceResponseDto>> ExtractPlaces(Amenity amenity, long areaId)
+	{
+		var overpassResponse = await _overpassProvider.OnGetSearchText(amenity, areaId);
+		if (overpassResponse == null)
 		{
-			case PlaceSource.OpenStreetMap:
-				var osmResults = await _osmOverpassProvider.OnGetSearchText(city, amenity);
-				var osmPois = PlaceResponseDto.ConvertToPlaceResponseDto(osmResults.Elements);
-				return osmPois;
-			case PlaceSource.GoogleMaps:
-				var results = await _googleMapsProvider.OnGetSearchText(city.ToString(), amenity.ToString());
-				// var placesPois = PlaceResponseDto.ConvertToPlaceResponseDto(results);
-				// TODO: implement conversion and test googlemaps source
-				return null;
-			default:
-				return null;
+			throw new InvalidOperationException("OverpassResponse is null");
 		}
+
+		if (overpassResponse.Elements.Count == 0)
+		{
+			throw new InvalidOperationException("OverpassResponse.Elements is empty");
+		}
+
+		return PlaceResponseDto.ConvertToPlaceResponseDto(overpassResponse.Elements);
 	}
 
-	public async Task<List<PlaceResponseDto>> GetPlacesOfInterest(City city, Amenity amenity)
+	private async Task<long> ExtractAreaId(City city)
 	{
-		var overpassResponse = await _osmOverpassProvider.OnGetSearchText(city, amenity);
-		return PlaceResponseDto.ConvertToPlaceResponseDto(overpassResponse.Elements);
+		var nominatimData = await _nominatimProvider.ExtractNominatimData(city.ToString());
+		if (nominatimData == null || nominatimData.Count == 0)
+		{
+			throw new InvalidOperationException("NominatimData is null or empty");
+		}
+
+		var areaData = nominatimData.FirstOrDefault();
+
+		if (areaData == null)
+		{
+			throw new InvalidOperationException("areaData is null");
+		}
+
+		var areaId = areaData.OsmId;
+
+		if (areaData.OsmType == "relation")
+		{
+			areaId += 3600000000;
+		}
+
+		return areaId;
 	}
 }
