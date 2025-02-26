@@ -1,0 +1,12 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ExploreNoteApi.Database.Models;
+
+public class Friend : AuditableEntity
+{
+	public int Id { get; set; }
+	public int UserId { get; set; }
+	public int FriendId { get; set; }
+	[ForeignKey("UserId")] public User User { get; set; }
+	[ForeignKey("FriendUserId")] public User FriendUser { get; set; }
+}
