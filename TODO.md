@@ -1,7 +1,7 @@
 # TODO
 
 └─ api-explore-note-csharp
-   ├─ FernwehApi
+   ├─ ExploreNoteApi
    │  ├─ Controllers
    │  │  └─ ServiceController.cs
    │  │     └─ line 17: TODO : add the [Authorize] attribute to secure this endpoint
@@ -17,6 +17,6 @@
    │     └─ ReviewService.cs
    │        ├─ line 61: TODO : if place exists and items and reviews
    │        └─ line 103: TODO : map PlaceReviewRequestDto to Review
-   └─ FernwehApi.Database
+   └─ ExploreNoteApi.Database
       └─ Photo.cs
          └─ line 11: TODO : fix photos later
