@@ -3,5 +3,7 @@ bin
 .DS_Store
 
 */secrets.json
-FernwehApi/connectionstrings.json
-FernwehApi/Results/
+ExploreNoteApi/connectionstrings.json
+ExploreNoteApi/Results/
+.idea
+.vscode
