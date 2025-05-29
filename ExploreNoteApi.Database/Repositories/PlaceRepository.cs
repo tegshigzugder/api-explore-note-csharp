@@ -4,19 +4,12 @@ using Microsoft.EntityFrameworkCore;
 namespace ExploreNoteApi.Database.Repositories;
 
 /// <inheritdoc />
-public class PlaceRepository : IPlaceRepository
+public class PlaceRepository(ExploreNoteDbContext dbContext) : IPlaceRepository
 {
-	private readonly ExploreNoteDbContext _dbContext;
-
-	public PlaceRepository(ExploreNoteDbContext dbContext)
-	{
-		_dbContext = dbContext;
-	}
-
 	/// <inheritdoc />
 	public async Task<List<Place>> GetAllPlaces()
 	{
-		return await _dbContext.Places
+		return await dbContext.Places
 			.Include(p => p.PlaceReviews)
 			.Include(p => p.PlaceItems)
 			.ThenInclude(pl => pl.PlaceItemReviews)
@@ -26,32 +19,32 @@ public class PlaceRepository : IPlaceRepository
 	/// <inheritdoc />
 	public async Task<Place?> GetPlaceById(long nodeId)
 	{
-		return await _dbContext.Places.FirstOrDefaultAsync(p => p.NodeId == nodeId);
+		return await dbContext.Places.FirstOrDefaultAsync(p => p.NodeId == nodeId);
 	}
 
 	/// <inheritdoc />
 	public async Task AddPlace(Place place)
 	{
-		await _dbContext.Places.AddAsync(place);
-		await _dbContext.SaveChangesAsync();
+		await dbContext.Places.AddAsync(place);
+		await dbContext.SaveChangesAsync();
 	}
 
 	/// <inheritdoc />
 	public async Task UpdatePlace(Place place)
 	{
-		_dbContext.Places.Update(place);
-		await _dbContext.SaveChangesAsync();
+		dbContext.Places.Update(place);
+		await dbContext.SaveChangesAsync();
 	}
 
 	/// <inheritdoc />
 	public async Task DeletePlace(long NodeId)
 	{
-		var place = await _dbContext.Places.FirstOrDefaultAsync(p => p.NodeId == NodeId);
+		var place = await dbContext.Places.FirstOrDefaultAsync(p => p.NodeId == NodeId);
 		if (place != null)
 		{
-			_dbContext.Places.Remove(place);
+			dbContext.Places.Remove(place);
 		}
 
-		await _dbContext.SaveChangesAsync();
+		await dbContext.SaveChangesAsync();
 	}
 }

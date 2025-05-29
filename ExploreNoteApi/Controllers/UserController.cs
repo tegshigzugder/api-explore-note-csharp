@@ -8,16 +8,9 @@ namespace ExploreNoteApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController : ControllerBase
+public class UserController(ILogger<UserController> logger, IUserService userService) : ControllerBase
 {
-	private readonly ILogger<UserController> _logger;
-	private readonly IUserService _userService;
-
-	public UserController(ILogger<UserController> logger, IUserService userService)
-	{
-		_logger = logger;
-		_userService = userService;
-	}
+	private readonly ILogger<UserController> _logger = logger;
 
 	/// <summary>
 	/// Create a new user.
@@ -27,7 +20,7 @@ public class UserController : ControllerBase
 	[HttpPost("signup")]
 	public async Task<IActionResult> Signup([FromBody] SignupRequestDto request)
 	{
-		var result = await _userService.CreateUserAsync(request.Username, request.Email, request.Password);
+		var result = await userService.CreateUserAsync(request.Username, request.Email, request.Password);
 		if (result.Success)
 		{
 			return Ok(result);
@@ -44,7 +37,7 @@ public class UserController : ControllerBase
 	[HttpPost("login")]
 	public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
 	{
-		var result = await _userService.AuthenticateUserAsync(request.Email, request.Password);
+		var result = await userService.AuthenticateUserAsync(request.Email, request.Password);
 		if (result.Success)
 		{
 			return Ok(result);

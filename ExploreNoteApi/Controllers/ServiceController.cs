@@ -5,14 +5,9 @@ namespace ExploreNoteApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ServiceController : ControllerBase
+public class ServiceController(ILogger<ServiceController> logger) : ControllerBase
 {
-	private readonly ILogger<ServiceController> _logger;
-
-	public ServiceController(ILogger<ServiceController> logger)
-	{
-		_logger = logger;
-	}
+	private readonly ILogger<ServiceController> _logger = logger;
 
 	// [Authorize]
 	// TODO: add the [Authorize] attribute to secure this endpoint

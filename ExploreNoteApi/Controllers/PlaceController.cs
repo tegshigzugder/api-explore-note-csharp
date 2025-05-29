@@ -10,27 +10,19 @@ namespace ExploreNoteApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PlaceController : ControllerBase
+public class PlaceController(
+	ILogger<PlaceController> logger,
+	IPlaceService placeService,
+	IEnumService enumService)
+	: ControllerBase
 {
-	private readonly ILogger<PlaceController> _logger;
-	private readonly IPlaceService _placeService;
-	private readonly IEnumService _enumService;
-
-	public PlaceController(
-		ILogger<PlaceController> logger,
-		IPlaceService placeService,
-		IEnumService enumService)
-	{
-		_logger = logger;
-		_placeService = placeService;
-		_enumService = enumService;
-	}
+	private readonly ILogger<PlaceController> _logger = logger;
 
 	[HttpGet("enums")]
 	public ActionResult<EnumsDto> GetEnums()
 	{
-		var amenities = _enumService.GetAmenities();
-		var cities = _enumService.GetCities();
+		var amenities = enumService.GetAmenities();
+		var cities = enumService.GetCities();
 
 		var enumsDto = new EnumsDto
 		{
@@ -46,7 +38,7 @@ public class PlaceController : ControllerBase
 	{
 		try
 		{
-			var places = await _placeService.ExtractPlaces(city, amenity);
+			var places = await placeService.ExtractPlaces(city, amenity);
 			return Ok(new ResponseWrapper<List<PlaceResponseDto>>(true, "Success", places));
 		}
 		catch (Exception ex)

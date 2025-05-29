@@ -7,19 +7,11 @@ using ExploreNoteApi.Providers;
 
 namespace ExploreNoteApi.Services;
 
-public class PlaceService : IPlaceService
+public class PlaceService(
+	IOverpassProvider overpassProvider,
+	INominatimProvider nominatimProvider)
+	: IPlaceService
 {
-	private readonly IOverpassProvider _overpassProvider;
-	private readonly INominatimProvider _nominatimProvider;
-
-	public PlaceService(
-		IOverpassProvider overpassProvider,
-		INominatimProvider nominatimProvider)
-	{
-		_overpassProvider = overpassProvider;
-		_nominatimProvider = nominatimProvider;
-	}
-
 	public async Task<List<PlaceResponseDto>> ExtractPlaces(City city, Amenity amenity)
 	{
 		var areaId = await ExtractAreaId(city);
@@ -29,7 +21,7 @@ public class PlaceService : IPlaceService
 
 	private async Task<List<PlaceResponseDto>> ExtractPlaces(Amenity amenity, long areaId)
 	{
-		var overpassResponse = await _overpassProvider.OnGetSearchText(amenity, areaId);
+		var overpassResponse = await overpassProvider.OnGetSearchText(amenity, areaId);
 		if (overpassResponse == null)
 		{
 			throw new InvalidOperationException("OverpassResponse is null");
@@ -45,7 +37,7 @@ public class PlaceService : IPlaceService
 
 	private async Task<long> ExtractAreaId(City city)
 	{
-		var nominatimData = await _nominatimProvider.ExtractNominatimData(city.ToString());
+		var nominatimData = await nominatimProvider.ExtractNominatimData(city.ToString());
 		if (nominatimData == null || nominatimData.Count == 0)
 		{
 			throw new InvalidOperationException("NominatimData is null or empty");

@@ -1,5 +1,5 @@
 {
 	"ConnectionStrings": {
-		"Database": "Server=localhost;User ID=root;Password=;Database=mydatabase"
+		"Database": "Server=localhost;Port=3306;Database=mydockerdb;User ID=root;Password=mysecretpassword;Application Name=ExploreNoteApi"
 	}
 }

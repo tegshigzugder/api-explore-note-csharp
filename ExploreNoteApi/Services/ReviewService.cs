@@ -7,20 +7,17 @@ using ExploreNoteApi.Models;
 
 namespace ExploreNoteApi.Services;
 
-public class ReviewService : IReviewService
+public class ReviewService(
+	IPlaceRepository placeRepository) : IReviewService
 {
-	private readonly IPlaceRepository _placeRepository;
 	private readonly IPlaceItemRepository _placeItemRepository;
 
-	public ReviewService(IPlaceRepository placeRepository)
-	{
-		_placeRepository = placeRepository;
-	}
-
-	public async void AddReview(int userId, long placeId, PlaceReviewRequestDto placeReviewRequestDto)
+	public async void AddReview(int userId,
+		long placeId,
+		PlaceReviewRequestDto placeReviewRequestDto)
 	{
 		// user does exist
-		var placeDb = await _placeRepository.GetPlaceById(placeId);
+		var placeDb = await placeRepository.GetPlaceById(placeId);
 
 		// if place doesnt exist create it
 		if (placeDb == null)
@@ -40,20 +37,21 @@ public class ReviewService : IReviewService
 					}
 				},
 				PlaceItems = placeReviewRequestDto.PlaceItemReviews.Select(x => new PlaceItem
-				{
-					Name = x.PlaceItemName,
-					Price = x.PlaceItemPrice,
-					PlaceItemReviews = new List<PlaceItemReview>
 					{
-						new PlaceItemReview
+						Name = x.PlaceItemName,
+						Price = x.PlaceItemPrice,
+						PlaceItemReviews = new List<PlaceItemReview>
 						{
-							Rating = x.PlaceItemRating,
-							Comment = x.PlaceItemComment,
+							new PlaceItemReview
+							{
+								Rating = x.PlaceItemRating,
+								Comment = x.PlaceItemComment,
+							}
 						}
-					}
-				}).ToList()
+					})
+					.ToList()
 			};
-			await _placeRepository.AddPlace(place);
+			await placeRepository.AddPlace(place);
 		}
 		else
 		{
@@ -69,20 +67,21 @@ public class ReviewService : IReviewService
 			};
 
 			placeDb.PlaceItems = placeReviewRequestDto.PlaceItemReviews.Select(x => new PlaceItem
-			{
-				Name = x.PlaceItemName,
-				Price = x.PlaceItemPrice,
-				PlaceItemReviews = new List<PlaceItemReview>
 				{
-					new PlaceItemReview
+					Name = x.PlaceItemName,
+					Price = x.PlaceItemPrice,
+					PlaceItemReviews = new List<PlaceItemReview>
 					{
-						Rating = x.PlaceItemRating,
-						Comment = x.PlaceItemComment,
+						new PlaceItemReview
+						{
+							Rating = x.PlaceItemRating,
+							Comment = x.PlaceItemComment,
+						}
 					}
-				}
-			}).ToList();
+				})
+				.ToList();
 
-			await _placeRepository.UpdatePlace(placeDb);
+			await placeRepository.UpdatePlace(placeDb);
 		}
 
 		// var placeDb = await _placeRepository.GetPlaceById(placeId);
@@ -105,10 +104,19 @@ public class ReviewService : IReviewService
 		// _reviewRepository.Add(review);
 	}
 
-	public async Task<List<PlaceDetailsResponseDto>> GetReview(int userId, long placeId)
+	public async Task<List<PlaceDetailsResponseDto>> GetAllReviews()
 	{
-		var places = await _placeRepository.GetAllPlaces();
-		var results = PlaceDetailsResponseDto.ConvertToPlaceDetailsResponseDto(places);
-		return results;
+		return (await placeRepository.GetAllPlaces()).Select(PlaceDetailsResponseDto.ConvertToPlaceDetailsResponseDto)
+			.ToList();
+	}
+
+	public async Task<List<PlaceDetailsResponseDto>> GetReview(int userId,
+		long placeId)
+	{
+		return
+		[
+			PlaceDetailsResponseDto.ConvertToPlaceDetailsResponseDto(
+				await placeRepository.GetPlaceById(placeId) ?? throw new InvalidOperationException("Place not found"))
+		];
 	}
 }

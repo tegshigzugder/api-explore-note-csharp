@@ -7,32 +7,25 @@ using Microsoft.Extensions.Logging;
 
 namespace ExploreNoteApi.Services;
 
-public class UserService : IUserService
+public class UserService(
+	ILogger<UserService> logger,
+	IUserRepository userRepository)
+	: IUserService
 {
-	private readonly ILogger<UserService> _logger;
-	private readonly IUserRepository _userRepository;
 	// private readonly JwtSettings _jwtSettings;
 
-	public UserService(
-		ILogger<UserService> logger,
-		IUserRepository userRepository
-		// JwtSettings jwtSettings
-	)
-	{
-		_logger = logger;
-		_userRepository = userRepository;
-		// _jwtSettings = jwtSettings;
-	}
+	// JwtSettings jwtSettings
+	// _jwtSettings = jwtSettings;
 
 	public async Task<ServiceResponseDto> CreateUserAsync(string username, string email, string password)
 	{
-		_logger.LogInformation("Creating user with username: {Username}, email: {Email}", username, email);
+		logger.LogInformation("Creating user with username: {Username}, email: {Email}", username, email);
 
 		// Check if the username already exists
-		var existingUserByUsername = await _userRepository.GetUserByUsernameAsync(username);
+		var existingUserByUsername = await userRepository.GetUserByUsernameAsync(username);
 		if (existingUserByUsername != null)
 		{
-			_logger.LogWarning("Username {Username} is already taken.", username);
+			logger.LogWarning("Username {Username} is already taken.", username);
 			return new ServiceResponseDto
 			{
 				Success = false,
@@ -41,10 +34,10 @@ public class UserService : IUserService
 		}
 
 		// Check if the email already exists
-		var existingUserByEmail = await _userRepository.GetUserByEmailAsync(email);
+		var existingUserByEmail = await userRepository.GetUserByEmailAsync(email);
 		if (existingUserByEmail != null)
 		{
-			_logger.LogWarning("Email {Email} is already taken.", email);
+			logger.LogWarning("Email {Email} is already taken.", email);
 			return new ServiceResponseDto
 			{
 				Success = false,
@@ -54,7 +47,7 @@ public class UserService : IUserService
 
 		await Task.Delay(100); // Simulate async work
 
-		await _userRepository.AddUserAsync(new User
+		await userRepository.AddUserAsync(new User
 		{
 			Username = username,
 			Email = email,
@@ -70,8 +63,8 @@ public class UserService : IUserService
 
 	public async Task<ServiceResponseDto> AuthenticateUserAsync(string email, string password)
 	{
-		_logger.LogInformation("Authenticating user with email: {Email}", email);
-		var user = await _userRepository.GetUserByEmailAsync(email);
+		logger.LogInformation("Authenticating user with email: {Email}", email);
+		var user = await userRepository.GetUserByEmailAsync(email);
 
 		if (user == null)
 		{

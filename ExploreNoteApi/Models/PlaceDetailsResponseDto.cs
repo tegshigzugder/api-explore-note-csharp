@@ -12,23 +12,17 @@ public class PlaceDetailsResponseDto
 	public List<PlaceReviewDto> Reviews { get; set; }
 	public List<PlaceItemDto> PlaceItems { get; set; }
 
-	public static List<PlaceDetailsResponseDto> ConvertToPlaceDetailsResponseDto(List<Place> elements)
+	public static PlaceDetailsResponseDto ConvertToPlaceDetailsResponseDto(Place place)
 	{
-		var responseList = new List<PlaceDetailsResponseDto>();
-		foreach (var element in elements)
-		{
 			var response = new PlaceDetailsResponseDto
 			{
-				NodeId = element.NodeId,
-				PlaceName = element.Name,
-				Location = element.Location,
-				Reviews = ConvertToReviewDtoList(element.PlaceReviews.ToList()),
-				PlaceItems = ConvertToPlaceItemDtoList(element.PlaceItems.ToList())
+				NodeId = place.NodeId,
+				PlaceName = place.Name,
+				Location = place.Location,
+				Reviews = ConvertToReviewDtoList(place.PlaceReviews.ToList()),
+				PlaceItems = ConvertToPlaceItemDtoList(place.PlaceItems.ToList())
 			};
-			responseList.Add(response);
-		}
-
-		return responseList;
+			return response;
 	}
 
 	private static List<PlaceItemDto> ConvertToPlaceItemDtoList(ICollection<PlaceItem> placeItems)

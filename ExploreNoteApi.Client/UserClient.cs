@@ -1,11 +1,6 @@
 namespace ExploreNoteApi.Client;
 
-public class UserClient
+public class UserClient(HttpClient httpClient)
 {
-	private readonly HttpClient _httpClient;
-
-	public UserClient(HttpClient httpClient)
-	{
-		_httpClient = httpClient;
-	}
+	private readonly HttpClient _httpClient = httpClient;
 }

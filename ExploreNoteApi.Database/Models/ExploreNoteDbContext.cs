@@ -4,6 +4,10 @@ namespace ExploreNoteApi.Database.Models;
 
 public class ExploreNoteDbContext : DbContext
 {
+	public ExploreNoteDbContext(DbContextOptions<ExploreNoteDbContext> options) : base(options)
+	{
+
+	}
 	public DbSet<User> Users { get; set; }
 	public DbSet<Place> Places { get; set; }
 	public DbSet<PlaceReview> PlaceReviews { get; set; }
@@ -13,17 +17,16 @@ public class ExploreNoteDbContext : DbContext
 	public DbSet<Friend> Friends { get; set; }
 	public string DbPath { get; }
 
-	public ExploreNoteDbContext()
-	{
-		var baseDirectory = AppContext.BaseDirectory;
+	// custom sqlite database path
+	// public ExploreNoteDbContext()
+	// {
+		// var baseDirectory = AppContext.BaseDirectory;
+		// var projectDirectory = System.IO.Directory.GetParent(baseDirectory).Parent.Parent.Parent.Parent.FullName;
+		// var dbFolder = System.IO.Path.Join(projectDirectory, "Database");
+		// DbPath = System.IO.Path.Join(dbFolder, "explorenote.db");
+	// }
 
-		var projectDirectory = System.IO.Directory.GetParent(baseDirectory).Parent.Parent.Parent.Parent.FullName;
-		var dbFolder = System.IO.Path.Join(projectDirectory, "Database");
-		DbPath = System.IO.Path.Join(dbFolder, "explorenote.db");
-	}
-
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-		=> optionsBuilder.UseSqlite($"Data Source={DbPath}");
+	// protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlite($"Data Source={DbPath}");
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{

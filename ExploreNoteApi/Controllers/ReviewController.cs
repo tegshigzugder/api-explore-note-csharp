@@ -9,32 +9,34 @@ namespace ExploreNoteApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ReviewController : ControllerBase
+public class ReviewController(
+	ILogger<ServiceController> logger,
+	IReviewService reviewService)
+	: ControllerBase
 {
-	private readonly ILogger<ServiceController> _logger;
-	private readonly IReviewService _reviewService;
+	private readonly ILogger<ServiceController> _logger = logger;
 
-	public ReviewController(
-		ILogger<ServiceController> logger,
-		IReviewService reviewService)
-	{
-		_logger = logger;
-		_reviewService = reviewService;
-	}
-
-	[HttpPost("addreview/{userId}/{placeId}")]
+	[HttpPost("addreview/{userId:int}/{placeId:long}")]
 	public IActionResult AddReview([FromRoute] int userId, [FromRoute] long placeId,
 		[FromBody] PlaceReviewRequestDto placeRequestDto)
 	{
-		_reviewService.AddReview(userId, placeId, placeRequestDto);
+		reviewService.AddReview(userId, placeId, placeRequestDto);
 		return Ok();
 	}
 
-	[HttpGet("getreview/{userId}/{placeId}")]
-	public async Task<ActionResult<List<PlaceDetailsResponseDto>>> GetReview([FromRoute] int userId = 1,
-		[FromRoute] long placeId = 1)
+	[HttpGet("getallreviews")]
+	public async Task<ActionResult<List<PlaceDetailsResponseDto>>> GetAllReviews()
 	{
-		var review = await _reviewService.GetReview(userId, placeId);
+		var reviews = await reviewService.GetAllReviews();
+		return Ok(reviews);
+	}
+
+	[HttpGet("getreview/{userId:int?}/{placeId:long?}")]
+	public async Task<ActionResult<List<PlaceDetailsResponseDto>>> GetReview(
+		[FromRoute] int userId,
+		[FromRoute] long placeId)
+	{
+		var review = await reviewService.GetReview(userId, placeId);
 		return Ok(review);
 	}
 }
